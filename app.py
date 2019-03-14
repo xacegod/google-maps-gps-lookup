@@ -15,7 +15,8 @@ try:
 
     cur = conn.cursor()
 
-    cur.execute("SELECT streets_db.uuid, ulice_dat.name, streets_db.number, streets_db.city, streets_db.state \
+    # simple sql query to get streets data from database, change as needed
+    cur.execute("SELECT streets_db.uuid, streets_db.name, streets_db.number, streets_db.city, streets_db.state \
                 FROM streets_db \
                 WHERE streets_db.lat = 0 \
                 order by streets_db.uuid\
@@ -23,6 +24,7 @@ try:
 
     res = cur.fetchall()
 
+    # number of Google API calls
     google_calls = 0
 
     # Google Api key
