@@ -4,9 +4,12 @@ from datetime import datetime
 import traceback
 import psycopg2
 import time
+import logging
 
 # I personally use large try blocks
 try:
+    # for logging if needed
+    logging.basicConfig(filename='errors.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
     # simple postgres database connection, for more information see psycopg2
     conn = psycopg2.connect("host=host_address dbname=database_name user=database_user password=database_password")
 
@@ -158,7 +161,10 @@ try:
         # if we made API call we need to wait no less than 5s
         if wait:
             time.sleep(6)
-
+    
+    # If you want to have log of the streets with no results, not needed since SQL will always skip those with latitude and longitude 
+    # logging.warning(streets_with_no_result)
+    # logging.warning(multiple_results)
     cur.close()
     conn.close()
 
@@ -167,5 +173,10 @@ except Exception as e:
     traceback.print_exc()
     # and we close connection to database
     # note there is no rollback here
-    cur.close()
-    conn.close()
+    logging.error(e)
+    # if no connection was established
+    try:
+        cur.close()
+        conn.close()
+    except:
+        pass
